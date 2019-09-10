@@ -15,24 +15,19 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      squeres: Array(9).fill(null),
+      squares: Array(9).fill(null),
       xIsNext: true
     };
   }
+
   handleClick(i) {
-    const history = this.state.history;
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
+    const squares = this.state.squares.slice();
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? "X" : "O";
     this.setState({
-      history: history.concat([
-        {
-          squares: squares
-        }
-      ]),
+      squares: squares,
       xIsNext: !this.state.xIsNext
     });
   }
@@ -40,18 +35,19 @@ class Board extends React.Component {
   renderSquare(i) {
     return (
       <Square
-        value={this.state.squeres[i]}
+        value={this.state.squares[i]}
         onClick={() => this.handleClick(i)}
       />
     );
   }
+
   render() {
-    const winner = calculateWinner(this.state.squeres);
+    const winner = calculateWinner(this.state.squares);
     let status;
     if (winner) {
-      status = "Winner:" + winner;
+      status = "Winner: " + winner;
     } else {
-      status = "Next player:" + (this.state.xIsNext ? "X" : "O");
+      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
 
     return (
@@ -78,18 +74,6 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      history: [
-        {
-          squeres: Array(9).fill(null)
-        }
-      ],
-      xIsNext: true
-    };
-  }
-
   render() {
     return (
       <div className="game">
@@ -97,18 +81,19 @@ class Game extends React.Component {
           <Board />
         </div>
         <div className="game-info">
-          <div>{/*status*/}</div>
-          <div>{/*TODO*/}</div>
+          <div>{/* status */}</div>
+          <ol>{/* TODO */}</ol>
         </div>
       </div>
     );
   }
 }
+
 // ========================================
 
 ReactDOM.render(<Game />, document.getElementById("root"));
 
-function calculateWinner(squeres) {
+function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -120,9 +105,9 @@ function calculateWinner(squeres) {
     [2, 4, 6]
   ];
   for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines;
-    if (squeres[a] && squeres[a] === squeres[b] && squeres[a] === squeres[c]) {
-      return squeres[a];
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
     }
   }
   return null;
